@@ -26,9 +26,7 @@
 
 .isDragOver {
     border-color: #5cb85c;
-    border-style: solid;
-    background  : linear-gradient(135deg, #86e3ce 0%, #a8e6cf 100%);
-    color       : #ffffff;
+    background  : #e8f5e9;
     box-shadow  : 0 5px 15px rgba(0, 77, 64, 0.15);
 }
 
@@ -43,8 +41,7 @@
 
 .isDragOver .dropZoneText,
 .dropZoneTextDragOver {
-    color      : #ffffff;
-    font-weight: 600;
+    font-weight: 550;
     font-size  : 1.1rem;
 }
 

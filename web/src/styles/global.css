@@ -205,10 +205,9 @@ button:disabled {
 
 .button-secondary:hover:not(:disabled),
 .button-secondary:focus:not(:disabled) {
-    background-color: #e0f2f1;
+    background-color: #eaf3f3;
     color           : #5cb85c;
     border-color    : #86e3ce;
-    transform       : translateY(-1px);
     outline         : none;
     box-shadow      : 0 2px 5px rgba(0, 0, 0, 0.05);
 }
