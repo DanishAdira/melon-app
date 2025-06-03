@@ -5,7 +5,7 @@ const AppHeader = () => {
     return (
         <header className={styles.headerContainer}>
             <div>
-                <h1 className={styles.title}>メロン画像分析アプリ test</h1>
+                <h1 className={styles.title}>メロン画像分析アプリ</h1>
             </div>
         </header>
     );
