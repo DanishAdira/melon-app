@@ -1,10 +1,9 @@
-import React from 'react';
+import React                                      from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import ImageUploadPage from "./pages/ImageUploadPage";
-import AnalysisResultsPage from './pages/AnalysisResultsPage';
-import LoadingPage from "./pages/LoadingPage";
-import MainLayout from './components/layout/MainLayout';
-
+import ImageUploadPage                            from "./pages/ImageUploadPage";
+import AnalysisResultsPage                        from './pages/AnalysisResultsPage';
+import LoadingPage                                from "./pages/LoadingPage";
+import MainLayout                                 from './components/layout/MainLayout';
 import "./styles/global.css";
 
 const App = () => {

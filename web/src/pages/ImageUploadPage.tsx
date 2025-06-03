@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ImageUploader from '../components/ImageUploader';
-import Button from '../components/common/Button';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-
-import styles from './ImageUploadPage.module.css';
+import { useNavigate }                             from 'react-router-dom';
+import ImageUploader                               from '../components/ImageUploader';
+import Button                                      from '../components/common/Button';
+import LoadingSpinner                              from '../components/common/LoadingSpinner';
+import styles                                      from './ImageUploadPage.module.css';
 
 const ImageUploadPage = () => {
-    const navigate = useNavigate();
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const navigate                                = useNavigate();
+    const [selectedFile, setSelectedFile]         = useState<File | null>(null);
+    const [isLoading, setIsLoading]               = useState<boolean>(false);
+    const [error, setError]                       = useState<string | null>(null);
     const [uploaderResetKey, setUploaderResetKey] = useState<number>(0);
 
     useEffect(() => {
@@ -47,13 +46,13 @@ const ImageUploadPage = () => {
             }
 
             const mockApiResult = {
-                id: `analysis_${Date.now()}`,
-                fileName: selectedFile.name,
-                meshDensity: `${(Math.random() * 15 + 75).toFixed(1)}%`,
-                branchPoints: Math.floor(Math.random() * 100 + 150),
-                detectionImageUrl: selectedFile ? URL.createObjectURL(selectedFile) : undefined,
+                id                   : `analysis_${Date.now()}`,
+                fileName             : selectedFile.name,
+                meshDensity          : `${(Math.random() * 15 + 75).toFixed(1)}%`,
+                branchPoints         : Math.floor(Math.random() * 100 + 150),
+                detectionImageUrl    : selectedFile ? URL.createObjectURL(selectedFile) : undefined,
                 estimatedMeshImageUrl: selectedFile ? URL.createObjectURL(selectedFile) : undefined,
-                summary: `「${selectedFile.name}」のメロン網目構造を分析しました (シミュレーション結果).`,
+                summary              : `「${selectedFile.name}」のメロン網目構造を分析しました (シミュレーション結果).`,
             };
 
             navigate("/analysis_results", { state: { analysisResult: mockApiResult } });
