@@ -138,12 +138,19 @@ button:disabled {
     box-shadow      : 0 2px 4px rgba(0, 0, 0, 0.1);
     transition      : background-color 0.2s ease-in-out, transform 0.15s ease, box-shadow 0.15s ease;
     cursor          : pointer;
+    display         : inline-block;
+    text-decoration : none;
+    text-align      : center;
+    line-height     : normal;
+    vertical-align  : middle;
 }
 
 .button-primary:hover:not(:disabled) {
     background-color: #4a934a;
     transform       : translateY(-2px);
     box-shadow      : 0 4px 8px rgba(0, 0, 0, 0.15);
+    color           : #ffffff;
+    text-decoration : none;
 }
 
 .button-primary:active:not(:disabled) {

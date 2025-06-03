@@ -4,6 +4,8 @@ import ImageUploader from '../components/ImageUploader';
 import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
+import styles from './ImageUploadPage.module.css';
+
 const ImageUploadPage = () => {
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -47,13 +49,14 @@ const ImageUploadPage = () => {
             const mockApiResult = {
                 id: `analysis_${Date.now()}`,
                 fileName: selectedFile.name,
-                score: (Math.random() * 100).toFixed(1),
-                detectedObjects: Math.floor(Math.random() * 5) + 1,
-                summary: "分析結果の概要テキスト (シミュレーション)",
-                resultImageUrl: selectedFile ? URL.createObjectURL(selectedFile) : undefined
+                meshDensity: `${(Math.random() * 15 + 75).toFixed(1)}%`,
+                branchPoints: Math.floor(Math.random() * 100 + 150),
+                detectionImageUrl: selectedFile ? URL.createObjectURL(selectedFile) : undefined,
+                estimatedMeshImageUrl: selectedFile ? URL.createObjectURL(selectedFile) : undefined,
+                summary: `「${selectedFile.name}」のメロン網目構造を分析しました (シミュレーション結果).`,
             };
 
-            navigate("/analysis-results", { state: { analysisResult: mockApiResult } });
+            navigate("/analysis_results", { state: { analysisResult: mockApiResult } });
 
             setSelectedFile(null);
             setUploaderResetKey(prevKey => prevKey + 1);
@@ -66,29 +69,29 @@ const ImageUploadPage = () => {
     };
 
     return (
-        <div className="image-upload-page-container">
+        <div className={styles.pageContainer}>
             <h1>画像アップロード</h1>
-            <p>分析したい画像をアップロードしてください．</p>
+            <p className={styles.introText}>分析したい画像をアップロードしてください</p>
 
             <ImageUploader
                 onFileSelect={handleFileSelected}
                 disabled={isLoading}
                 resetKey={uploaderResetKey}
-                className="image-uploader-section"
+                className={styles.uploaderSection}
             />
 
             {error && (
-                <div className="error-message">
+                <div className={styles.errorMessage}>
                     <p>エラー: {error}</p>
                 </div>
             )}
 
             {selectedFile && !isLoading && !error && (
-                <div className="analysis-button-container">
+                <div className={styles.buttonContainer}>
                     <Button
                         onClick={handleAnalysis}
                         disabled={isLoading}
-                        className="button-primary analyze-button"
+                        className="button-primary"
                     >
                         {isLoading ? "分析中..." : "この画像を分析する"}
                     </Button>
@@ -96,7 +99,7 @@ const ImageUploadPage = () => {
             )}
 
             {isLoading && (
-                <div className="loading-indicator-container">
+                <div className={styles.loadingContainer}>
                     <LoadingSpinner message="分析処理を実行中です．しばらくお待ちください..." />
                 </div>
             )}

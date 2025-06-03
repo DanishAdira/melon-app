@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ImageUploadPage from "./pages/ImageUploadPage";
+import AnalysisResultsPage from './pages/AnalysisResultsPage';
 import LoadingPage from "./pages/LoadingPage";
 import MainLayout from './components/layout/MainLayout';
 
@@ -14,6 +15,7 @@ const App = () => {
 
         <Route element={<MainLayout />}>
           <Route path="/image_upload" element={<ImageUploadPage />} />
+          <Route path="/analysis_results" element={<AnalysisResultsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />

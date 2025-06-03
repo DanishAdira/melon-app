@@ -1,0 +1,54 @@
+.pageContainer {
+    padding: 2rem 1rem;
+}
+
+.pageContainer h1 {
+    color        : #5cb85c;
+    text-align   : center;
+    margin-bottom: 0.75rem;
+    font-size    : 2rem;
+}
+
+.pageContainer .introText {
+    text-align   : center;
+    color        : #4a7c59;
+    font-size    : 1.1rem;
+    margin-bottom: 2.5rem;
+    max-width    : 550px;
+    margin-left  : auto;
+    margin-right : auto;
+}
+
+.uploaderSection {
+    margin-top   : 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.errorMessage {
+    text-align      : center;
+    color           : #b71c1c;
+    background-color: #ffcdd2;
+    border          : 1px solid #ef9a9a;
+    padding         : 1rem 1.25rem;
+    margin          : 1.5rem auto;
+    border-radius   : 0.375rem;
+    max-width       : 600px;
+    box-shadow      : 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.errorMessage p {
+    color        : inherit;
+    margin-bottom: 0;
+    font-weight  : 500;
+}
+
+.buttonContainer {
+    text-align   : center;
+    margin-top   : 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.loadingContainer {
+    text-align: center;
+    margin-top: 2rem;
+}
