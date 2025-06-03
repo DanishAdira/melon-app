@@ -67,7 +67,7 @@ const ImageUploadPage = () => {
 
     return (
         <div className="image-upload-page-container">
-            <h1>画像アップロードと分析</h1>
+            <h1>画像アップロード</h1>
             <p>分析したい画像をアップロードしてください．</p>
 
             <ImageUploader
