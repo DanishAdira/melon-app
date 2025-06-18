@@ -55,17 +55,17 @@ const AnalysisResultsPage = () => {
         </div>
 
         <div className={styles.imageSection}>
-            <h3>検出位置（画像）</h3>
+            <h3>入力画像</h3>
             {result.detectionImageUrl ? (
             <img
                 src={result.detectionImageUrl}
-                alt="検出位置"
+                alt="入力画像"
                 className={styles.resultImage}
             />
             ) : (
-            <p>検出位置画像はありません．</p>
+            <p>入力画像はありません．</p>
             )}
-            <p className={styles.imageCaption}>(シミュレーション画像)</p>
+            <p className={styles.imageCaption}>(選択された画像)</p>
         </div>
 
         <div className={styles.imageSection}>

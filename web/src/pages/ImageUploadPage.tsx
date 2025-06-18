@@ -158,7 +158,7 @@ const ImageUploadPage = () => {
 
             {isLoading && (
                 <div className={styles.loadingContainer}>
-                    <LoadingSpinner message="分析処理を実行中です．しばらくお待ちください..." />
+                    <LoadingSpinner message={"分析処理を実行中です．しばらくお待ちください... \n 初回実行時は時間がかかるおそれがあります．"}/>
                 </div>
             )}
         </div>
