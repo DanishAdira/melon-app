@@ -4,6 +4,7 @@ import ImageUploader                               from '../components/ImageUplo
 import Button                                      from '../components/common/Button';
 import LoadingSpinner                              from '../components/common/LoadingSpinner';
 import styles                                      from './ImageUploadPage.module.css';
+import { read } from 'fs';
 
 const ImageUploadPage = () => {
     const navigate                                = useNavigate();
@@ -34,28 +35,86 @@ const ImageUploadPage = () => {
         setIsLoading(true);
         setError(null);
 
-        const formData = new FormData();
-        formData.append("imageFile", selectedFile);
+        //const formData = new FormData();
+        //formData.append("imageFile", selectedFile);
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            const shouldSucceed = Math.random() > 0.15;
+            const reader = new FileReader();
+            reader.readAsDataURL(selectedFile);
 
-            if (!shouldSucceed) {
-                throw new Error("画像の分析処理に失敗しました (サーバーエラーシミュレーション).");
+            const base64String: string = await new Promise((resolve, reject) => {
+                reader.onload = () => {
+                    const result = reader.result as string;
+                    const base64 = result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = reject;
+            });
+
+            const response = await fetch("https://jhuxct22zb.execute-api.ap-northeast-1.amazonaws.com/v2/inference", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-api-key": "YAu9dpKNXg6rJjnTYghR13F5MmMirXZ99hHp3rF6"
+                },
+                body: JSON.stringify({
+                    body: base64String,
+                    isBase64Encoded: true,
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`APIリクエストに失敗しました: ${response.statusText}`);
             }
 
-            const mockApiResult = {
-                id                   : `analysis_${Date.now()}`,
-                fileName             : selectedFile.name,
-                meshDensity          : `${(Math.random() * 15 + 75).toFixed(1)}%`,
-                branchPoints         : Math.floor(Math.random() * 100 + 150),
-                detectionImageUrl    : selectedFile ? URL.createObjectURL(selectedFile) : undefined,
-                estimatedMeshImageUrl: selectedFile ? URL.createObjectURL(selectedFile) : undefined,
-                summary              : `「${selectedFile.name}」のメロン網目構造を分析しました (シミュレーション結果).`,
-            };
+            const maskData: number[][] = await response.json();
 
-            navigate("/analysis_results", { state: { analysisResult: mockApiResult } });
+            const canvas = document.createElement("canvas");
+            const width = maskData[0].length;
+            const height = maskData.length;
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+                throw new Error("Canvasのコンテキストが取得できませんでした．");
+            }
+
+            const imageData = ctx.createImageData(width, height);
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const value = maskData[y][x];
+                    const index = (y * width + x) * 4;
+                    imageData.data[index + 0] = value;
+                    imageData.data[index + 1] = value;
+                    imageData.data[index + 2] = value;
+                    imageData.data[index + 3] = 255;
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+            const maskImageUrl = canvas.toDataURL();
+
+            const analysisResult = {
+                id                  : `analysis_${Date.now()}`,
+                fileName             : selectedFile.name,
+                meshDensity          : "-",
+                branchPoints         : "-",
+                detectionImageUrl    : URL.createObjectURL(selectedFile),
+                estimatedMeshImageUrl: maskImageUrl,
+                summary              : `「${selectedFile.name}」のメロン網目構造を分析しました (シミュレーション結果).`,
+            }
+
+            // const mockApiResult = {
+            //     id                   : `analysis_${Date.now()}`,
+            //     fileName             : selectedFile.name,
+            //     meshDensity          : `${(Math.random() * 15 + 75).toFixed(1)}%`,
+            //     branchPoints         : Math.floor(Math.random() * 100 + 150),
+            //     detectionImageUrl    : selectedFile ? URL.createObjectURL(selectedFile) : undefined,
+            //     estimatedMeshImageUrl: selectedFile ? URL.createObjectURL(selectedFile) : undefined,
+            //     summary              : `「${selectedFile.name}」のメロン網目構造を分析しました (シミュレーション結果).`,
+            // };
+
+            navigate("/analysis_results", { state: { analysisResult } });
 
             setSelectedFile(null);
             setUploaderResetKey(prevKey => prevKey + 1);
