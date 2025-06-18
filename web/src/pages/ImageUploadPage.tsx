@@ -51,7 +51,7 @@ const ImageUploadPage = () => {
                 reader.onerror = reject;
             });
 
-            const response = await fetch("https://jhuxct22zb.execute-api.ap-northeast-1.amazonaws.com/v2/inference", {
+            const response = await fetch("https://jhuxct22zb.execute-api.ap-northeast-1.amazonaws.com/v1/inference", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
