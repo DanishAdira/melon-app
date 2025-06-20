@@ -51,11 +51,10 @@ const ImageUploadPage = () => {
                 reader.onerror = reject;
             });
 
-            const response = await fetch("https://jhuxct22zb.execute-api.ap-northeast-1.amazonaws.com/v1/inference", {
+            const response = await fetch("https://t7shv66qm6lsjd7kh6qzc4uqf40gatkf.lambda-url.ap-northeast-1.on.aws/", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "x-api-key": "YAu9dpKNXg6rJjnTYghR13F5MmMirXZ99hHp3rF6"
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     body: base64String,
