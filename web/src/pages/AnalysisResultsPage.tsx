@@ -7,20 +7,6 @@ const AnalysisResultsPage = () => {
     const location = useLocation();
     const result   = location.state?.analysisResult;
 
-    useEffect(() => {
-        const urlsToRevoke: string[] = [];
-        if (result?.detectionImageUrl && result.detectionImageUrl.startsWith('blob:')) {
-        urlsToRevoke.push(result.detectionImageUrl);
-        }
-        if (result?.estimatedMeshImageUrl && result.estimatedMeshImageUrl.startsWith('blob:')) {
-        urlsToRevoke.push(result.estimatedMeshImageUrl);
-        }
-
-        return () => {
-        urlsToRevoke.forEach(url => URL.revokeObjectURL(url));
-        };
-    }, [result]);
-
     if (!result) {
         return (
         <div className={styles.pageContainer}>
@@ -32,6 +18,8 @@ const AnalysisResultsPage = () => {
         </div>
         );
     }
+    const meshDensityDisplay = result.meshDensity !== undefined ? result.meshDensity + '%' : '---';
+    const branchPointsDisplay = result.branchPoints !== undefined ? result.branchPoints : '---';
 
     return (
         <div className={styles.pageContainer}>
@@ -46,26 +34,26 @@ const AnalysisResultsPage = () => {
         <div className={styles.resultGrid}>
             <div className={styles.resultCard}>
             <h3>網目密度</h3>
-            <p className={styles.resultCardValue}>{result.meshDensity || '---'}</p>
+            <p className={styles.resultCardValue}>{meshDensityDisplay}</p>
             </div>
             <div className={styles.resultCard}>
             <h3>分岐点数</h3>
-            <p className={styles.resultCardValue}>{result.branchPoints || '---'}</p>
+            <p className={styles.resultCardValue}>{branchPointsDisplay}</p>
             </div>
         </div>
 
         <div className={styles.imageSection}>
-            <h3>入力画像</h3>
+            <h3>検出結果プロット画像</h3>
             {result.detectionImageUrl ? (
             <img
                 src={result.detectionImageUrl}
-                alt="入力画像"
+                alt="検出結果プロット画像"
                 className={styles.resultImage}
             />
             ) : (
-            <p>入力画像はありません．</p>
+            <p>画像はありません．</p>
             )}
-            <p className={styles.imageCaption}>(選択された画像)</p>
+            <p className={styles.imageCaption}>(検出領域を元画像にプロット)</p>
         </div>
 
         <div className={styles.imageSection}>

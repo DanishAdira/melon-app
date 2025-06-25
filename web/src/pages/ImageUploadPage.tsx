@@ -5,6 +5,14 @@ import Button                                      from '../components/common/Bu
 import LoadingSpinner                              from '../components/common/LoadingSpinner';
 import styles                                      from './ImageUploadPage.module.css';
 import { read } from 'fs';
+import { json } from 'stream/consumers';
+
+interface AnalysisResponse {
+    density: number;
+    branch_points: number;
+    plotted_image: string;
+    mask_image: string;
+}
 
 const ImageUploadPage = () => {
     const navigate                                = useNavigate();
@@ -12,14 +20,6 @@ const ImageUploadPage = () => {
     const [isLoading, setIsLoading]               = useState<boolean>(false);
     const [error, setError]                       = useState<string | null>(null);
     const [uploaderResetKey, setUploaderResetKey] = useState<number>(0);
-
-    useEffect(() => {
-        const hasVisited = sessionStorage.getItem("hasVisited");
-        if (!hasVisited) {
-            sessionStorage.setItem("hasVisited", "true");
-            navigate("/", { replace: true });
-        }
-    }, [navigate]);
 
     const handleFileSelected = useCallback((file: File | null) => {
         setSelectedFile(file);
@@ -35,9 +35,6 @@ const ImageUploadPage = () => {
         setIsLoading(true);
         setError(null);
 
-        //const formData = new FormData();
-        //formData.append("imageFile", selectedFile);
-
         try {
             const reader = new FileReader();
             reader.readAsDataURL(selectedFile);
@@ -51,67 +48,44 @@ const ImageUploadPage = () => {
                 reader.onerror = reject;
             });
 
-            const response = await fetch("https://t7shv66qm6lsjd7kh6qzc4uqf40gatkf.lambda-url.ap-northeast-1.on.aws/", {
+            const response = await fetch("https://t7shv66qm6lsjd7kh6qzc4uqf40gatkf.lambda-url.ap-northeast-1.on.aws/ ", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    body: base64String,
-                    isBase64Encoded: true,
+                    image_data: base64String
                 })
             });
 
             if (!response.ok) {
-                throw new Error(`APIリクエストに失敗しました: ${response.statusText}`);
+                const errorData = await response.json().catch(() => ({ error: "サーバーから有効なエラー応答がありませんでした。" }));
+                const errorMessage = errorData.error || (errorData.body ? JSON.parse(errorData.body).error : response.statusText);
+                throw new Error(`APIリクエストに失敗しました: ${errorMessage}`);
             }
 
-            const maskData: number[][] = await response.json();
+            const apiResult: AnalysisResponse = await response.json();
 
-            const canvas = document.createElement("canvas");
-            const width = maskData[0].length;
-            const height = maskData.length;
-            canvas.width = width;
-            canvas.height = height;
+            const now       = new Date();
+            const year      = now.getFullYear();
+            const month     = String(now.getMonth() + 1).padStart(2, '0');
+            const day       = String(now.getDate()).padStart(2, '0');
+            const hours     = String(now.getHours()).padStart(2, '0');
+            const minutes   = String(now.getMinutes()).padStart(2, '0');
+            const seconds   = String(now.getSeconds()).padStart(2, '0');
 
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                throw new Error("Canvasのコンテキストが取得できませんでした．");
-            }
-
-            const imageData = ctx.createImageData(width, height);
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const value = maskData[y][x];
-                    const index = (y * width + x) * 4;
-                    imageData.data[index + 0] = value;
-                    imageData.data[index + 1] = value;
-                    imageData.data[index + 2] = value;
-                    imageData.data[index + 3] = 255;
-                }
-            }
-            ctx.putImageData(imageData, 0, 0);
-            const maskImageUrl = canvas.toDataURL();
+            const analysisId = `analysis_${year}${month}${day}_${hours}${minutes}${seconds}`;
 
             const analysisResult = {
-                id                  : `analysis_${Date.now()}`,
-                fileName             : selectedFile.name,
-                meshDensity          : "-",
-                branchPoints         : "-",
-                detectionImageUrl    : URL.createObjectURL(selectedFile),
-                estimatedMeshImageUrl: maskImageUrl,
-                summary              : `「${selectedFile.name}」のメロン網目構造を分析しました (シミュレーション結果).`,
+                id: analysisId,
+                fileName: selectedFile.name,
+                meshDensity: apiResult.density,
+                branchPoints: apiResult.branch_points,
+                detectionImageUrl: 'data:image/png;base64,' + apiResult.plotted_image,
+                estimatedMeshImageUrl: 'data:image/png;base64,' + apiResult.mask_image,
+                summary:  `「${selectedFile.name}」のメロン網目構造を分析しました。`,
             }
 
-            // const mockApiResult = {
-            //     id                   : `analysis_${Date.now()}`,
-            //     fileName             : selectedFile.name,
-            //     meshDensity          : `${(Math.random() * 15 + 75).toFixed(1)}%`,
-            //     branchPoints         : Math.floor(Math.random() * 100 + 150),
-            //     detectionImageUrl    : selectedFile ? URL.createObjectURL(selectedFile) : undefined,
-            //     estimatedMeshImageUrl: selectedFile ? URL.createObjectURL(selectedFile) : undefined,
-            //     summary              : `「${selectedFile.name}」のメロン網目構造を分析しました (シミュレーション結果).`,
-            // };
 
             navigate("/analysis_results", { state: { analysisResult } });
 
