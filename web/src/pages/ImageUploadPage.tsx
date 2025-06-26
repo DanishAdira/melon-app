@@ -54,7 +54,8 @@ const ImageUploadPage = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    image_data: base64String
+                    image_data: base64String,
+                    filename: selectedFile.name
                 })
             });
 
