@@ -4,8 +4,6 @@ import ImageUploader                               from '../components/ImageUplo
 import Button                                      from '../components/common/Button';
 import LoadingSpinner                              from '../components/common/LoadingSpinner';
 import styles                                      from './ImageUploadPage.module.css';
-import { read } from 'fs';
-import { json } from 'stream/consumers';
 
 interface AnalysisResponse {
     density: number;
@@ -48,7 +46,12 @@ const ImageUploadPage = () => {
                 reader.onerror = reject;
             });
 
-            const response = await fetch("https://t7shv66qm6lsjd7kh6qzc4uqf40gatkf.lambda-url.ap-northeast-1.on.aws/ ", {
+            const lambdaUrl = process.env.REACT_APP_LAMBDA_FUNCTION_URL;
+            if (!lambdaUrl) {
+                throw new Error("Lambda function URL is not defined in environment variables.");
+            }
+
+            const response = await fetch(lambdaUrl, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
