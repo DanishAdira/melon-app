@@ -10,6 +10,10 @@ interface AnalysisResponse {
     branch_points: number;
     plotted_image: string;
     mask_image: string;
+    circularity: number;
+    mesh_uniformity: number;
+    contour_image: string;
+    branch_vis_image: string;
 }
 
 const ImageUploadPage = () => {
@@ -85,8 +89,12 @@ const ImageUploadPage = () => {
                 fileName: selectedFile.name,
                 meshDensity: apiResult.density,
                 branchPoints: apiResult.branch_points,
+                circularity: apiResult.circularity,
+                meshUniformity: apiResult.mesh_uniformity,
                 detectionImageUrl: 'data:image/png;base64,' + apiResult.plotted_image,
                 estimatedMeshImageUrl: 'data:image/png;base64,' + apiResult.mask_image,
+                contourImageUrl: 'data:image/png;base64,' + apiResult.contour_image,
+                branchVisImageUrl: 'data:image/png;base64,' + apiResult.branch_vis_image,
                 summary:  `「${selectedFile.name}」のメロン網目構造を分析しました。`,
             }
 
