@@ -29,6 +29,20 @@ const AnalysisDetailPage = () => {
             </div>
 
             <div className={styles.imageSection}>
+                <h3>検出結果プロット画像</h3>
+                {result.detectionImageUrl ? (
+                    <img
+                        src={result.detectionImageUrl}
+                        alt="検出結果プロット画像"
+                        className={styles.resultImage}
+                    />
+                ) : (
+                    <p>検出結果プロット画像はありません。</p>
+                )}
+                <p className={styles.imageCaption}>(検出したメロンの中心領域をプロットした画像)</p>
+            </div>
+
+            <div className={styles.imageSection}>
                 <h3>網目推定（セグメント化された画像）</h3>
                 {result.estimatedMeshImageUrl ? (
                     <img
@@ -53,7 +67,7 @@ const AnalysisDetailPage = () => {
                 ) : (
                     <p>輪郭検出画像はありません。</p>
                 )}
-                <p className={styles.imageCaption}>(最大外接円と最小内接円に基づく真円度)</p>
+                <p className={styles.imageCaption}>(楕円フィッティングに基づく真円度)</p>
             </div>
 
             <div className={styles.imageSection}>

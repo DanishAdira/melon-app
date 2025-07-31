@@ -53,17 +53,17 @@ const AnalysisResultsPage = () => {
         </div>
 
         <div className={styles.imageSection}>
-            <h3>検出結果プロット画像</h3>
-            {result.detectionImageUrl ? (
+            <h3>分析したメロン</h3>
+            {result.inputImageUrl ? (
             <img
-                src={result.detectionImageUrl}
-                alt="検出結果プロット画像"
+                src={result.inputImageUrl}
+                alt="分析したメロン"
                 className={styles.resultImage}
             />
             ) : (
             <p>画像はありません．</p>
             )}
-            <p className={styles.imageCaption}>(検出領域を元画像にプロット)</p>
+            <p className={styles.imageCaption}>(分析対象のメロン(入力画像))</p>
         </div>
 
         {/* <div className={styles.imageSection}>

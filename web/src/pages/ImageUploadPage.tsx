@@ -8,6 +8,7 @@ import styles                                      from './ImageUploadPage.modul
 interface AnalysisResponse {
     density: number;
     branch_points: number;
+    input_image: string;
     plotted_image: string;
     mask_image: string;
     circularity: number;
@@ -91,6 +92,7 @@ const ImageUploadPage = () => {
                 branchPoints: apiResult.branch_points,
                 circularity: apiResult.circularity,
                 meshUniformity: apiResult.mesh_uniformity,
+                inputImageUrl: 'data:image/png;base64,' + apiResult.input_image,
                 detectionImageUrl: 'data:image/png;base64,' + apiResult.plotted_image,
                 estimatedMeshImageUrl: 'data:image/png;base64,' + apiResult.mask_image,
                 contourImageUrl: 'data:image/png;base64,' + apiResult.contour_image,
