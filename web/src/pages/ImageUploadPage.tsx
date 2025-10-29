@@ -21,6 +21,7 @@ interface AnalysisResponse {
 const ImageUploadPage = () => {
     const navigate                                = useNavigate();
     const [selectedFile, setSelectedFile]         = useState<File | null>(null);
+    const [crossingDate, setCrossingDate]         = useState<string>('');
     const [isLoading, setIsLoading]               = useState<boolean>(false);
     const [error, setError]                       = useState<string | null>(null);
     const [uploaderResetKey, setUploaderResetKey] = useState<number>(0);
@@ -30,10 +31,58 @@ const ImageUploadPage = () => {
         setError(null);
     }, []);
 
+// ★追加: 日付変更ハンドラ
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCrossingDate(e.target.value);
+        setError(null); // 日付が変更されたらエラーをクリア
+    };
+
+// ★追加: 交配後日数を計算する関数
+    const calculateDaysAfterCrossing = (dateStr: string): number | null => {
+        if (!dateStr) return null;
+
+        try {
+            // JSTでの「今日」の0時0分を取得
+            const now = new Date();
+            const todayJST = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const todayTime = todayJST.getTime();
+
+            // JSTでの「交配日」の0時0分を取得 (YYYY-MM-DD形式を正しくパース)
+            const parts = dateStr.split('-');
+            const crossingDateJST = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            const crossingTimeJST = crossingDateJST.getTime();
+
+            if (crossingTimeJST > todayTime) {
+                setError("交配日は本日以前の日付を選択してください。");
+                return null; // 未来日は無効
+            }
+
+            const diffTime = todayTime - crossingTimeJST;
+            // ミリ秒を日数に変換し、切り上げ (交配日当日は0日目)
+            const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+            // 交配日当日は「0日目」として返す
+            return diffDays;
+        } catch (e) {
+            console.error("Date calculation error:", e);
+            return null;
+        }
+    };
+
     const handleAnalysis = async () => {
         if (!selectedFile) {
             setError("分析する画像が選択されていません．");
             return;
+        }
+
+        let daysAfterCrossing: number | null = null;
+        if (crossingDate) {
+            daysAfterCrossing = calculateDaysAfterCrossing(crossingDate);
+            if (daysAfterCrossing === null && error) {
+                // calculateDaysAfterCrossing内で未来日エラーがセットされた場合
+                setIsLoading(false); // ローディング開始前なので解除
+                return;
+            }
         }
 
         setIsLoading(true);
@@ -89,6 +138,7 @@ const ImageUploadPage = () => {
             const analysisResult = {
                 id: analysisId,
                 fileName: selectedFile.name,
+                daysAfterCrossing: daysAfterCrossing,
                 meshDensity: apiResult.density,
                 branchPoints: apiResult.branch_points,
                 // circularity: apiResult.circularity,
@@ -106,6 +156,7 @@ const ImageUploadPage = () => {
             navigate("/analysis_results", { state: { analysisResult } });
 
             setSelectedFile(null);
+            setCrossingDate('');
             setUploaderResetKey(prevKey => prevKey + 1);
 
         } catch (err: any) {
@@ -120,18 +171,29 @@ const ImageUploadPage = () => {
             <h1>画像アップロード</h1>
             <p className={styles.introText}>分析したい画像をアップロードしてください</p>
 
+            <div className={styles.dateInputContainer}>
+                <label htmlFor="crossingDate" className={styles.dateLabel}>
+                    交配日:
+                </label>
+                <input
+                    type="date"
+                    id="crossingDate"
+                    value={crossingDate}
+                    onChange={handleDateChange}
+                    disabled={isLoading}
+                    className={styles.dateInput}
+                />
+                <p className={styles.dateCaption}>
+                    交配日を入力すると，分析実行日時点での「交配経過日目」が表示されます．
+                </p>
+            </div>
+
             <ImageUploader
                 onFileSelect={handleFileSelected}
                 disabled={isLoading}
                 resetKey={uploaderResetKey}
                 className={styles.uploaderSection}
             />
-
-            {error && (
-                <div className={styles.errorMessage}>
-                    <p>エラー: {error}</p>
-                </div>
-            )}
 
             {selectedFile && !isLoading && !error && (
                 <div className={styles.buttonContainer}>
@@ -142,6 +204,12 @@ const ImageUploadPage = () => {
                     >
                         {isLoading ? "分析中..." : "この画像を分析する"}
                     </Button>
+                </div>
+            )}
+
+            {error && (
+                <div className={styles.errorMessage}>
+                    <p>エラー: {error}</p>
                 </div>
             )}
 

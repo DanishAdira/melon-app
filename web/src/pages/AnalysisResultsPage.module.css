@@ -93,3 +93,20 @@
     text-align: center;
     margin-top: 2.5rem;
 }
+
+.qualityScoreCard {
+    margin-bottom: 2rem;
+    background-color: #f7fdf9;
+    border: 1px solid #4a7c59;
+}
+
+.qualityScoreCard h3 {
+    color: #4a7c59;
+    font-size: 1.3rem;
+}
+
+.qualityScoreValue {
+    color: #5cb85c;
+    font-size: 2rem;
+    line-height: 1.1;
+}

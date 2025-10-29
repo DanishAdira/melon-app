@@ -25,6 +25,9 @@ const AnalysisResultsPage = () => {
     const qualityScoreDisplay = result.qualityScore !== undefined && result.qualityScore !== null
                                 ? result.qualityScore.toFixed(2) // 小数点第2位まで表示 + 単位
                                 : '---';
+    const daysAfterCrossingDisplay = result.daysAfterCrossing !== null && result.daysAfterCrossing !== undefined
+                                ? `${result.daysAfterCrossing} 日目`
+                                : 'N/A'; // 日付が入力されなかった場合
 
     return (
         <div className={styles.pageContainer}>
@@ -33,7 +36,15 @@ const AnalysisResultsPage = () => {
             <div className={styles.resultHeader}>
                 <p><strong>ファイル名:</strong> {result.fileName || 'N/A'}</p>
                 <p><strong>分析ID:</strong> {result.id || 'N/A'}</p>
+                <p><strong>交配経過日目:</strong> {daysAfterCrossingDisplay}</p>
                 {result.summary && <p><strong>サマリー:</strong> {result.summary}</p>}
+            </div>
+
+            <div className={`${styles.resultCard} ${styles.qualityScoreCard}`}>
+                <h3>品質スコア</h3>
+                <p className={`${styles.resultCardValue} ${styles.qualityScoreValue}`}>
+                    {qualityScoreDisplay}
+                </p>
             </div>
 
             <div className={styles.resultGrid}>
@@ -53,10 +64,10 @@ const AnalysisResultsPage = () => {
                 <h3>網目均一性</h3>
                 <p className={styles.resultCardValue}>{meshUniformityDisplay}</p>
             </div>
-            <div className={styles.resultCard}>
+            {/* <div className={styles.resultCard}>
                 <h3>品質スコア</h3>
                 <p className={styles.resultCardValue}>{qualityScoreDisplay}</p>
-            </div>
+            </div> */}
         </div>
 
         <div className={styles.imageSection}>
