@@ -56,7 +56,7 @@ const AnalysisDetailPage = () => {
                 <p className={styles.imageCaption}>(シミュレーション画像)</p>
             </div>
 
-            <div className={styles.imageSection}>
+            {/* <div className={styles.imageSection}> }
                 <h3>形状解析画像</h3>
                 {result.contourImageUrl ? (
                     <img
@@ -68,7 +68,7 @@ const AnalysisDetailPage = () => {
                     <p>輪郭検出画像はありません。</p>
                 )}
                 <p className={styles.imageCaption}>(楕円フィッティングに基づく真円度)</p>
-            </div>
+            </div*/}
 
             <div className={styles.imageSection}>
                 <h3>分岐点プロット画像</h3>

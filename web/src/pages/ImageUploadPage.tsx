@@ -4,16 +4,17 @@ import ImageUploader                               from '../components/ImageUplo
 import Button                                      from '../components/common/Button';
 import LoadingSpinner                              from '../components/common/LoadingSpinner';
 import styles                                      from './ImageUploadPage.module.css';
-
+import { AnalysisResultData }                         from '../types/analysisTypes';
 interface AnalysisResponse {
     density: number;
     branch_points: number;
     input_image: string;
     plotted_image: string;
     mask_image: string;
-    circularity: number;
+    //circularity: number;
     mesh_uniformity: number;
-    contour_image: string;
+    quality_score: number | null;
+    //contour_image: string;
     branch_vis_image: string;
 }
 
@@ -90,12 +91,13 @@ const ImageUploadPage = () => {
                 fileName: selectedFile.name,
                 meshDensity: apiResult.density,
                 branchPoints: apiResult.branch_points,
-                circularity: apiResult.circularity,
+                // circularity: apiResult.circularity,
                 meshUniformity: apiResult.mesh_uniformity,
+                qualityScore: apiResult.quality_score,
                 inputImageUrl: 'data:image/png;base64,' + apiResult.input_image,
                 detectionImageUrl: 'data:image/png;base64,' + apiResult.plotted_image,
                 estimatedMeshImageUrl: 'data:image/png;base64,' + apiResult.mask_image,
-                contourImageUrl: 'data:image/png;base64,' + apiResult.contour_image,
+                // contourImageUrl: 'data:image/png;base64,' + apiResult.contour_image,
                 branchVisImageUrl: 'data:image/png;base64,' + apiResult.branch_vis_image,
                 summary:  `「${selectedFile.name}」のメロン網目構造を分析しました。`,
             }

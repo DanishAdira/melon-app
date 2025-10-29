@@ -20,8 +20,11 @@ const AnalysisResultsPage = () => {
     }
     const meshDensityDisplay = result.meshDensity !== undefined ? result.meshDensity + '%' : '---';
     const branchPointsDisplay = result.branchPoints !== undefined ? result.branchPoints : '---';
-    const circularityDisplay = result.circularity !== undefined ? result.circularity : '---';
+    // const circularityDisplay = result.circularity !== undefined ? result.circularity : '---';
     const meshUniformityDisplay = result.meshUniformity !== undefined ? result.meshUniformity : '---';
+    const qualityScoreDisplay = result.qualityScore !== undefined && result.qualityScore !== null
+                                ? result.qualityScore.toFixed(2) // 小数点第2位まで表示 + 単位
+                                : '---';
 
     return (
         <div className={styles.pageContainer}>
@@ -42,13 +45,17 @@ const AnalysisResultsPage = () => {
                 <h3>分岐点数</h3>
                 <p className={styles.resultCardValue}>{branchPointsDisplay}</p>
             </div>
-            <div className={styles.resultCard}>
+            {/* <div className={styles.resultCard}> }
                 <h3>真円度</h3>
                 <p className={styles.resultCardValue}>{circularityDisplay}</p>
-            </div>
+            {</div> */}
             <div className={styles.resultCard}>
                 <h3>網目均一性</h3>
                 <p className={styles.resultCardValue}>{meshUniformityDisplay}</p>
+            </div>
+            <div className={styles.resultCard}>
+                <h3>品質スコア</h3>
+                <p className={styles.resultCardValue}>{qualityScoreDisplay}</p>
             </div>
         </div>
 
